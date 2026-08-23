@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block title %}学生管理 - 学生管理系统{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1"><i class="bi bi-people-fill me-2"></i>学生管理</h4>
+        <p class="text-muted mb-0">共 {{ students|length }} 名学生</p>
+    </div>
+    <button class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#addModal">
+        <i class="bi bi-plus-lg me-1"></i>新增学生
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-4">学号</th>
+                        <th>姓名</th>
+                        <th>性别</th>
+                        <th>班级</th>
+                        <th>电话</th>
+                        <th class="text-center pe-4">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in students %}
+                    <tr>
+                        <td class="ps-4 fw-semibold">{{ s.id }}</td>
+                        <td>{{ s.name }}</td>
+                        <td>
+                            {% if s.gender == '男' %}
+                            <span class="badge bg-primary bg-opacity-10 text-primary">{{ s.gender }}</span>
+                            {% else %}
+                            <span class="badge bg-danger bg-opacity-10 text-danger">{{ s.gender }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ s.cls }}</td>
+                        <td>{{ s.phone }}</td>
+                        <td class="text-center pe-4">
+                            <button class="btn btn-sm btn-outline-primary me-1 edit-btn"
+                                    data-bs-toggle="modal" data-bs-target="#editModal"
+                                    data-id="{{ s.id }}" data-name="{{ s.name }}" data-gender="{{ s.gender }}"
+                                    data-cls="{{ s.cls }}" data-phone="{{ s.phone }}">
+                                <i class="bi bi-pencil"></i> 编辑
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger del-btn"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    data-url="/student/del?id={{ s.id }}" data-name="{{ s.name }}">
+                                <i class="bi bi-trash"></i> 删除
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if not students %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="bi bi-inbox" style="font-size:2rem;"></i><br>暂无学生数据
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>新增学生</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="/student/add">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">学号 <span class="text-danger">*</span></label>
+                        <input type="text" name="id" class="form-control" placeholder="如：2025004" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">姓名 <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="请输入姓名" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">性别</label>
+                        <select name="gender" class="form-select">
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">班级</label>
+                        <input type="text" name="cls" class="form-control" placeholder="如：计科1班">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">电话</label>
+                        <input type="text" name="phone" class="form-control" placeholder="请输入手机号">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>编辑学生</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="/student/edit" id="editForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">学号</label>
+                        <input type="text" class="form-control" id="editId" readonly disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">姓名 <span class="text-danger">*</span></label>
+                        <input type="text" name="name" id="editName" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">性别</label>
+                        <select name="gender" id="editGender" class="form-select">
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">班级</label>
+                        <input type="text" name="cls" id="editCls" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">电话</label>
+                        <input type="text" name="phone" id="editPhone" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-warning"><i class="bi bi-check-lg me-1"></i>保存修改</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>确认删除</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">确定要删除学生 <strong id="delName"></strong> 吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <a href="#" id="delConfirmBtn" class="btn btn-danger"><i class="bi bi-trash me-1"></i>删除</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.getElementById('editId').value = this.dataset.id;
+        document.getElementById('editName').value = this.dataset.name;
+        document.getElementById('editGender').value = this.dataset.gender;
+        document.getElementById('editCls').value = this.dataset.cls;
+        document.getElementById('editPhone').value = this.dataset.phone;
+        document.getElementById('editForm').action = '/student/edit?id=' + this.dataset.id;
+    });
+});
+document.querySelectorAll('.del-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.getElementById('delName').textContent = this.dataset.name;
+        document.getElementById('delConfirmBtn').href = this.dataset.url;
+    });
+});
+</script>
+{% endblock %}

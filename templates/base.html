@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}学生管理系统{% endblock %}</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f0f2f5; min-height: 100vh; }
+        .navbar { box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+        .card { border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+        .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.1); }
+        .stat-card { transition: transform .2s; }
+        .stat-card:hover { transform: translateY(-4px); }
+        .btn { border-radius: 8px; }
+        .table th { background-color: #f8f9fa; font-weight: 600; }
+        .modal-header { border-radius: 12px 12px 0 0; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #4e73df, #224abe);">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/index">
+                <i class="bi bi-mortarboard-fill me-2"></i>学生管理系统
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/index"><i class="bi bi-house-door me-1"></i>首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/student"><i class="bi bi-people me-1"></i>学生管理</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/score"><i class="bi bi-journal-check me-1"></i>成绩管理</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/ai"><i class="bi bi-robot me-1"></i>AI分析</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

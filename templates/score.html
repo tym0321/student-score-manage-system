@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% block title %}成绩管理 - 学生管理系统{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1"><i class="bi bi-journal-check me-2"></i>成绩管理</h4>
+        <p class="text-muted mb-0">共 {{ scores|length }} 条成绩记录</p>
+    </div>
+    <button class="btn btn-success px-4" data-bs-toggle="modal" data-bs-target="#addModal">
+        <i class="bi bi-plus-lg me-1"></i>新增成绩
+    </button>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form action="/score/search" method="get" class="row g-2 align-items-end">
+            <div class="col-md-8">
+                <label class="form-label">按姓名搜索</label>
+                <input type="text" name="name" class="form-control" placeholder="输入学生姓名..."
+                       value="{{ search_name if search_name is defined else '' }}">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search me-1"></i>搜索</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if search_name is defined and search_name %}
+<div class="alert alert-info d-flex align-items-center">
+    <i class="bi bi-info-circle me-2"></i>
+    搜索 "<strong>{{ search_name }}</strong>" 的结果（{{ scores|length }} 条）
+    <a href="/score" class="ms-auto btn btn-sm btn-outline-primary">清除搜索</a>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-4">#</th>
+                        <th>姓名</th>
+                        <th>课程</th>
+                        <th>分数</th>
+                        <th>等级</th>
+                        <th class="text-center pe-4">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in scores %}
+                    <tr>
+                        <td class="ps-4 text-muted">{{ loop.index }}</td>
+                        <td class="fw-semibold">{{ s.name }}</td>
+                        <td>{{ s.course }}</td>
+                        <td>
+                            <span class="fw-bold
+                                {% if s.score >= 90 %}text-success
+                                {% elif s.score >= 70 %}text-primary
+                                {% elif s.score >= 60 %}text-warning
+                                {% else %}text-danger{% endif %}">
+                                {{ s.score }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if s.score >= 90 %}
+                            <span class="badge bg-success">优秀</span>
+                            {% elif s.score >= 80 %}
+                            <span class="badge bg-primary">良好</span>
+                            {% elif s.score >= 70 %}
+                            <span class="badge bg-info">中等</span>
+                            {% elif s.score >= 60 %}
+                            <span class="badge bg-warning text-dark">及格</span>
+                            {% else %}
+                            <span class="badge bg-danger">不及格</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center pe-4">
+                            <button class="btn btn-sm btn-outline-primary me-1 edit-score-btn"
+                                    data-bs-toggle="modal" data-bs-target="#editModal"
+                                    data-name="{{ s.name }}" data-course="{{ s.course }}" data-score="{{ s.score }}">
+                                <i class="bi bi-pencil"></i> 编辑
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger del-score-btn"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    data-url="/score/del?name={{ s.name }}&course={{ s.course }}"
+                                    data-info="{{ s.name }} - {{ s.course }}">
+                                <i class="bi bi-trash"></i> 删除
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if not scores %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="bi bi-inbox" style="font-size:2rem;"></i><br>暂无成绩数据
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>新增成绩</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="/score/add">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">姓名 <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="学生姓名" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">课程 <span class="text-danger">*</span></label>
+                        <input type="text" name="course" class="form-control" placeholder="课程名称" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">分数 <span class="text-danger">*</span></label>
+                        <input type="number" name="score" class="form-control" min="0" max="100" placeholder="0 - 100" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-success"><i class="bi bi-check-lg me-1"></i>保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>编辑成绩</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="/score/edit" id="editScoreForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">姓名</label>
+                        <input type="text" id="editScoreName" class="form-control" readonly disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">课程 <span class="text-danger">*</span></label>
+                        <input type="text" name="new_course" id="editScoreCourse" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">分数 <span class="text-danger">*</span></label>
+                        <input type="number" name="score" id="editScoreValue" class="form-control" min="0" max="100" required>
+                    </div>
+                    <input type="hidden" name="orig_name" id="editOrigName">
+                    <input type="hidden" name="orig_course" id="editOrigCourse">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-warning"><i class="bi bi-check-lg me-1"></i>保存修改</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>确认删除</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">确定要删除 <strong id="delScoreInfo"></strong> 的成绩吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <a href="#" id="delScoreConfirmBtn" class="btn btn-danger"><i class="bi bi-trash me-1"></i>删除</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.edit-score-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.getElementById('editScoreName').value = this.dataset.name;
+        document.getElementById('editScoreCourse').value = this.dataset.course;
+        document.getElementById('editScoreValue').value = this.dataset.score;
+        document.getElementById('editOrigName').value = this.dataset.name;
+        document.getElementById('editOrigCourse').value = this.dataset.course;
+        document.getElementById('editScoreForm').action =
+            '/score/edit?name=' + encodeURIComponent(this.dataset.name) + '&course=' + encodeURIComponent(this.dataset.course);
+    });
+});
+document.querySelectorAll('.del-score-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.getElementById('delScoreInfo').textContent = this.dataset.info;
+        document.getElementById('delScoreConfirmBtn').href = this.dataset.url;
+    });
+});
+</script>
+{% endblock %}

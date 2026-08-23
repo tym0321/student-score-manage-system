@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}首页 - 学生管理系统{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h4 class="fw-bold">📊 数据概览</h4>
+    <p class="text-muted">欢迎使用学生管理系统，以下是最新数据概况</p>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-3 col-sm-6">
+        <div class="card stat-card p-4 h-100">
+            <div class="d-flex align-items-center">
+                <div class="rounded-3 d-flex align-items-center justify-content-center me-3"
+                     style="width:56px;height:56px;background:rgba(78,115,223,.12);">
+                    <i class="bi bi-people-fill text-primary" style="font-size:1.6rem;"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">学生总数</div>
+                    <div class="fw-bold fs-4">{{ student_count }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card stat-card p-4 h-100">
+            <div class="d-flex align-items-center">
+                <div class="rounded-3 d-flex align-items-center justify-content-center me-3"
+                     style="width:56px;height:56px;background:rgba(28,200,138,.12);">
+                    <i class="bi bi-journal-check text-success" style="font-size:1.6rem;"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">成绩记录</div>
+                    <div class="fw-bold fs-4">{{ score_count }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card stat-card p-4 h-100">
+            <div class="d-flex align-items-center">
+                <div class="rounded-3 d-flex align-items-center justify-content-center me-3"
+                     style="width:56px;height:56px;background:rgba(246,194,59,.12);">
+                    <i class="bi bi-graph-up text-warning" style="font-size:1.6rem;"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">平均分</div>
+                    <div class="fw-bold fs-4">{{ avg_score }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card stat-card p-4 h-100">
+            <div class="d-flex align-items-center">
+                <div class="rounded-3 d-flex align-items-center justify-content-center me-3"
+                     style="width:56px;height:56px;background:rgba(92,184,92,.12);">
+                    <i class="bi bi-check-circle text-success" style="font-size:1.6rem;"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">及格率</div>
+                    <div class="fw-bold fs-4">{{ pass_rate }}%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-3"><h5 class="fw-bold"> 快捷操作</h5></div>
+<div class="row g-3 mb-5">
+    <div class="col-md-4">
+        <a href="/student" class="text-decoration-none">
+            <div class="card p-4 text-center h-100" style="transition:transform .2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <i class="bi bi-people text-primary" style="font-size:2.5rem;"></i>
+                <h6 class="mt-3 fw-bold">学生管理</h6>
+                <small class="text-muted">增删改查学生信息</small>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="/score" class="text-decoration-none">
+            <div class="card p-4 text-center h-100" style="transition:transform .2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <i class="bi bi-journal-check text-success" style="font-size:2.5rem;"></i>
+                <h6 class="mt-3 fw-bold">成绩管理</h6>
+                <small class="text-muted">录入与查询成绩</small>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="/ai" class="text-decoration-none">
+            <div class="card p-4 text-center h-100" style="transition:transform .2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <i class="bi bi-robot text-warning" style="font-size:2.5rem;"></i>
+                <h6 class="mt-3 fw-bold">AI 成绩分析</h6>
+                <small class="text-muted">智能数据分析报告</small>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="text-center pb-4">
+    <a href="/" class="text-muted text-decoration-none small">
+        <i class="bi bi-box-arrow-right me-1"></i>退出登录
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登录 - 学生管理系统</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.2);
+        }
+        .login-card .card-body { padding: 3rem; }
+        .login-icon {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+        .login-icon i { font-size: 2.2rem; color: #fff; }
+        .form-control:focus { border-color: #667eea; box-shadow: 0 0 0 .25rem rgba(102,126,234,.25); }
+        .btn-login {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none; color: #fff;
+            padding: 12px; font-size: 1.1rem; border-radius: 10px;
+        }
+        .btn-login:hover { opacity: .9; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="card login-card">
+        <div class="card-body">
+            <div class="login-icon">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <h3 class="text-center mb-1">学生管理系统</h3>
+            <p class="text-center text-muted mb-4">请登录以继续</p>
+            {% if error is defined and error %}
+            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+            <form method="post" action="/login">
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-person me-1"></i>账号</label>
+                    <input type="text" name="username" class="form-control form-control-lg" placeholder="请输入账号" required autofocus>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label"><i class="bi bi-lock me-1"></i>密码</label>
+                    <input type="password" name="password" class="form-control form-control-lg" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="btn btn-login w-100">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>登 录
+                </button>
+            </form>
+            <p class="text-center text-muted mt-3 mb-0 small">默认账号：admin / admin</p>
+        </div>
+    </div>
+</body>
+</html>
